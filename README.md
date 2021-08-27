@@ -42,14 +42,14 @@
 
 ## 분석/설계
 ### Event Storming 결과
-    MSAEz 로 모델링한 이벤트스토밍 결과 </br>
+    MSAEz 로 모델링한 이벤트스토밍 결과
     http://labs.msaez.io/#/storming/fMnS97KBhKdTR73T20ep9sUs6kE2/9131f35ec41231894db13d063a05c048
 
 #### 1. 완성된 1차 모형
- ![image](https://user-images.githubusercontent.com/87048633/130976168-ee9a6212-0040-4f27-a5f6-ac1a8e6b17f2.png)
+ ![image](https://user-images.githubusercontent.com/87048633/131067490-a61c5806-9c65-4de7-a97a-92522f2fe8d5.png)
  
 #### 2-1. 1차 완성본에 대한 기능적 요구사항에 대한 검증 
- ![image](https://user-images.githubusercontent.com/87048633/130976391-1105511b-fcdf-44ac-9897-9952ce4ab69b.png) </br>
+ ![image](https://user-images.githubusercontent.com/87048633/131067412-9206e2c5-5c40-4b73-9257-2edff25e2195.png)
  (O) 1. 관람객은 방문하려는 날짜와 회차(시간) 선택, 연락처를 입력하고 예약한다. </br>
  (O) 2. 예약 등록시 관람료를 결제해야 한다. </br>
  (O) 3. 관람료가 결제되지 않으면 최종 관람 예약이 성립되지 않는다. </br>
@@ -59,7 +59,7 @@
  (O) 7. 관람객은 본인의 예약 내역을 조회할 수 있다. </br>
  
 #### 2-2. 1차 완성본에 대한 비기능적 요구사항에 대한 검증
- ![image](https://user-images.githubusercontent.com/87048633/130977521-c87ac44b-c448-4912-b4f0-237588b049f9.png) </br>
+ ![image](https://user-images.githubusercontent.com/87048633/131067367-ef31ab2a-28df-44d0-b2e2-e63ec44e5306.png)
  (O) 1. 트랜잭션 </br>
        - 관람료가 결제되어야 최종 관람 예약이 성립된다. -> Sync 호출 </br>
  (O) 2. 장애격리 </br>
