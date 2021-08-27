@@ -215,17 +215,17 @@ rental서비스 내부의 payment 서비스
 - 비기능 요구사항 중 하나인 예약(Booking) -> 결제(Payment)간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 처리하기로 하였다.
 - 호출 프로토콜은 앞서 Rest Repository에 의해 노출되어 있는 REST 서비스를 FeignClient 를 이용하여 호출하도록 한다.
   ![image](https://user-images.githubusercontent.com/87048633/130982925-7e929b83-b1b3-4b94-94dd-339d72bc4a94.png) </br>
-- Payment 마이크로 서비스를 연동하기위한 Booking 마이크로 서비스의 application.yml 파일
-  ![image](https://user-images.githubusercontent.com/87048633/130983236-711288ab-3d85-4667-bcaf-258ed8de9e78.png)
-- 동기식 호출 후 payment 서비스 처리결과
-  --> http GET payment 수행 결과 화면 캡처 <--
+- Payment 마이크로 서비스를 연동하기위한 Booking 마이크로 서비스의 application.yml 파일</br>
+  ![image](https://user-images.githubusercontent.com/87048633/130983236-711288ab-3d85-4667-bcaf-258ed8de9e78.png) </br>
+- 동기식 호출 후 payment 서비스 처리결과</br>
+  ![image](https://user-images.githubusercontent.com/87048633/131062057-fadb35f5-4584-4077-8d29-ec0fa4c76152.png) </br>
   
 ### Gateway
-  - Gateway 서비스 확인
-    서비스 직접 조회
-      --> 서비스를 직접 입력하여 조회 (포트까지...)하여 조회된 화면 캡처 <--
-    Gateway로 조회
-      --> Gateway를 통해 조회된 화면 캡처 <--
+  - Gateway 서비스 확인 </br>
+  	- 서비스 직접 조회</br>
+      	![image](https://user-images.githubusercontent.com/87048633/131061668-68d5379f-ce86-4c05-83c3-9cc033315a08.png) </br>
+	- Gateway로 조회</br>
+      	![image](https://user-images.githubusercontent.com/87048633/131061736-9b6697cc-a16f-49eb-964c-7328bbd95632.png) </br>
       
 ### 서킷 브레이킹
 --> 좀 더 공부해 볼 것 <--
@@ -235,12 +235,12 @@ rental서비스 내부의 payment 서비스
 - Polyglot Persistent 조건을 만족하기 위해 기존 h2 DB를 hsqldb로 변경하여 동작시킨다.
 ```
 		<!--
-    <dependency>
+   		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-    -->
+    		-->
 
 		<!-- polyglot start -->
 		<dependency>
