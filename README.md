@@ -191,33 +191,81 @@ public interface ExhibitionRepository extends CrudRepository<Exhibition, Long> {
 ```
 
 ### Saga
-- 적용 후 REST API 의 테스트
-  --> 시나리오별 수행 결과 화면 캡처 <--
+- 전시회 정보 등록하기 </br>
+	http POST http://localhost:8085/exhibitions date=2021-09-01 time=1000 audienceCnt=100 title=Arirang_2021 </br>
+	http POST http://localhost:8085/exhibitions date=2021-09-01 time=1300 audienceCnt=100 title=Arirang_2021 </br>
+	http POST http://localhost:8085/exhibitions date=2021-09-01 time=1600 audienceCnt=100 title=Arirang_2021 </br>
+	http POST http://localhost:8085/exhibitions date=2021-09-01 time=1900 audienceCnt=100 title=Arirang_2021 </br>
+	![image](https://user-images.githubusercontent.com/87048633/131498084-32e98d26-f335-477d-bf57-34c4ab5a4ee4.png) </br>
 
-### 비동기식 호출과 Eventual Consistency
-- RentalPlaced -> PaymentApproved -> DeliveryStarted -> ProductDecreased 순서로 Event가 처리됨 (전시회 예약 프로세스에 맞춰 수정 필요!)
---> kafka consumer 모니터링 내역 화면 캡처 <-- 
+	topic 확인 </br>
+	![image](https://user-images.githubusercontent.com/87048633/131497891-f83b5f2c-588e-408c-bf75-7e881fa89547.png) </br>
 
-### CQRS
-- MyPage에서 예약 신청 여부 / 결제성공여부 확인 (CQRS)
-  : MyPage 조회시, 예약 신청 이벤트까지만 수신 내역 확인
-   --> http 조회 내역 화면 캡처 <--
-  : MyPage 조회시, 모든 이벤트 수신내역 확인
-   --> http 조회 내역 화면 캡처 <--
+- 예약된 전시회가 없음을 확인하기 </br>
+	booking>http http://localhost:8081/bookings  </br>  
+	![image](https://user-images.githubusercontent.com/87048633/131495771-572cedee-6992-419d-bb93-34fe9815b1cc.png) </br>
+
+	mypage>http http://localhost:8081/mypages  </br>
+	![image](https://user-images.githubusercontent.com/87048633/131495794-b244b2aa-7991-4176-bc4c-cd17cd9f0795.png) </br>
+
+	payment>http http://localhost:8084/payments  </br>
+	![image](https://user-images.githubusercontent.com/87048633/131495854-170811e5-710e-410c-a26b-67908ea52c24.png) </br>
+
+	exhibition>http http://localhost:8085/exhibitions  </br>
+	![image](https://user-images.githubusercontent.com/87048633/131495823-b545dbb6-6b8e-4494-a42d-6d4a54d8d8fa.png) </br>
+	
+	topic 확인 </br>
+	![image](https://user-images.githubusercontent.com/87048633/131496093-71437f1b-0014-49ca-9827-ae1fd6cc7d09.png) </br>
+
+- 전시회 예약하기 </br>
+	http POST http://localhost:8081/bookings date=2021-08-31 custName=Jane phoneNum=010-9899-9899 exhibitionId=1 bookingStatus=Booked time=1330 amt=10000 </br>
+	![image](https://user-images.githubusercontent.com/87048633/131498650-f84aa3f4-cc55-43f4-b73b-68c4ae06975e.png) </br>
+	![image](https://user-images.githubusercontent.com/87048633/131498674-7cf6ccb4-7314-4cff-ad74-d10274945dcb.png) </br>
+	![image](https://user-images.githubusercontent.com/87048633/131498875-eed0c6be-cee5-4d82-9f0c-d8b7f2d73acb.png) </br>
+
+	topic 확인 </br>
+	![image](https://user-images.githubusercontent.com/87048633/131498826-8ac737de-4726-49d6-a990-b4c478f3aff7.png) </br>
+
+- 전시회 예약 취소하기 </br>
+	http DELETE http://localhost:8081/bookings/1 </br>
+	![image](https://user-images.githubusercontent.com/87048633/131498964-63926e4e-20f3-448c-8d6e-2323eebfc3fc.png) </br>
+	![image](https://user-images.githubusercontent.com/87048633/131498973-12ff4de3-8a63-478c-a5f6-d47ab1286657.png) </br>
+	![image](https://user-images.githubusercontent.com/87048633/131499048-43142a9f-773a-4c2f-9764-707810f30a64.png) </br>
+
+	topic 확인 </br>
+	![image](https://user-images.githubusercontent.com/87048633/131499018-345fe69a-30c2-4941-a9ff-90e003e4d127.png) </br>
+
+- 예약 정보 확인하기(CQRS) </br>
+	http GET http://localhost:8081/myPages </br>
+	![image](https://user-images.githubusercontent.com/87048633/131499138-3ee98005-7061-45df-9a63-73465ebcd40b.png) </br>
+
+
+### 비동기식 호출과 Eventual Consistency 
+- Booked -> CompletedPayment -> IncreasedAudience 순서로 Event가 처리됨 </br>
+	![image](https://user-images.githubusercontent.com/87048633/131503756-78f2072f-4409-45f6-a469-ab96b2dc5366.png) </br>
+ 
+### CQRS </br>
+- 예약 정보 확인하기(CQRS) </br>
+	http GET http://localhost:8081/myPages </br>
+	![image](https://user-images.githubusercontent.com/87048633/131499138-3ee98005-7061-45df-9a63-73465ebcd40b.png) </br>
    
-### Correlation
---> 좀 더 공부해 볼 것 <-- 
+### Correlation 
+- 전시회 예약 목록 확인 </br>
+  ![image](https://user-images.githubusercontent.com/87048633/131502740-fd89cd72-c165-4e12-bb2c-0ea5fbbe0812.png) </br>
+- 특정 예약건만 삭제 </br>
+  http DELETE http://localhost:8081/bookings/1 </br>
+  ![image](https://user-images.githubusercontent.com/87048633/131502990-97723ee1-551c-4341-bb3c-c6042f892f12.png) </br>
    
 ### 동기식 호출
-분석단계에서의 조건 중 하나로 렌탈(rental) -> 결제(Payment)간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 처리하기로 하였다.
-호출 프로토콜은 이미 앞서 Rest Repository 에 의해 노출되어있는 REST 서비스를 FeignClient 를 이용하여 호출하도록 한다.
-rental서비스 내부의 payment 서비스
-- 비기능 요구사항 중 하나인 예약(Booking) -> 결제(Payment)간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 처리하기로 하였다.
-- 호출 프로토콜은 앞서 Rest Repository에 의해 노출되어 있는 REST 서비스를 FeignClient 를 이용하여 호출하도록 한다.
+분석단계에서의 조건 중 하나로 예약(Booking) -> 결제(Payment)간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 처리하기로 하였다.</br>
+호출 프로토콜은 이미 앞서 Rest Repository 에 의해 노출되어있는 REST 서비스를 FeignClient 를 이용하여 호출하도록 한다.</br>
+
+- 비기능 요구사항 중 하나인 예약(Booking) -> 결제(Payment)간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 처리하기로 하였다. </br>
+- 호출 프로토콜은 앞서 Rest Repository에 의해 노출되어 있는 REST 서비스를 FeignClient 를 이용하여 호출하도록 한다. </br>
   ![image](https://user-images.githubusercontent.com/87048633/130982925-7e929b83-b1b3-4b94-94dd-339d72bc4a94.png) </br>
-- Payment 마이크로 서비스를 연동하기위한 Booking 마이크로 서비스의 application.yml 파일</br>
+- Payment서비스를 연동하기위한 Booking 서비스의 application.yml 파일</br>
   ![image](https://user-images.githubusercontent.com/87048633/130983236-711288ab-3d85-4667-bcaf-258ed8de9e78.png) </br>
-- 동기식 호출 후 payment 서비스 처리결과</br>
+- 동기식 호출 후 Payment서비스 처리결과</br>
   ![image](https://user-images.githubusercontent.com/87048633/131062057-fadb35f5-4584-4077-8d29-ec0fa4c76152.png) </br>
   
 ### Gateway
@@ -228,30 +276,23 @@ rental서비스 내부의 payment 서비스
       	![image](https://user-images.githubusercontent.com/87048633/131061736-9b6697cc-a16f-49eb-964c-7328bbd95632.png) </br>
       
 ### 서킷 브레이킹
---> 좀 더 공부해 볼 것 <--
-  - 서킷 브레이킹 프레임워크의 선택: FeignClient + hystrix
+  - 서킷 브레이킹 프레임워크의 선택 : FeignClient + hystrix </br>
+  - Booking 서비스의 application.yaml </br>
+  	- Hystrix 설정 : 요청처리 쓰레드에서 처리 시간이 610 밀리세컨드가 넘어서기 시작하여 어느 정도 유지되면 Circuit Breaker 회로가 닫히도록 설정 </br>
+   		![image](https://user-images.githubusercontent.com/87048633/131499559-3890198b-4a8f-41fe-ad45-9228abd9d549.png)</br>
+  - 피호출 서비스 (결제:Payment.java)의 임의 후바 처리 400 밀리세컨드에서 증감 220 밀리세컨드 정도 왔다갔다 하게 처리 </br>
+	![image](https://user-images.githubusercontent.com/87048633/131500001-39284688-2568-46f4-a38a-07a58b34adfd.png) </br>
+  - 서킷 브레이킹 처리 이전 </br>
+	![image](https://user-images.githubusercontent.com/87048633/131499263-7e3cd971-5e79-41b7-9df2-5ca6ef727103.png) </br>
+  - 서킷 브레이킹 처리 이후 </br>
+	![image](https://user-images.githubusercontent.com/87048633/131499270-e5fa2aa2-7f0d-4c54-90ad-756746ad3972.png) </br>
 
 ### Polyglot Persistent/Programming
-- Polyglot Persistent 조건을 만족하기 위해 기존 h2 DB를 hsqldb로 변경하여 동작시킨다.
-```
-		<!--
-   		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-    		-->
+- Polyglot Persistent 조건을 만족하기 위해 Exhibition 서비스의 기존 h2 DB를 hsqldb로 변경하여 동작시킨다. (pom.xml) </br>
+  ![image](https://user-images.githubusercontent.com/87048633/131501731-9dbdccd3-ac9b-401f-a994-d0909b27caa7.png) </br>
+- 재기동 후 전시회 등록 처리</br>
+  ![image](https://user-images.githubusercontent.com/87048633/131501662-38a4b5ca-9cf2-4a52-ad8f-10883e696e2b.png) </br>
 
-		<!-- polyglot start -->
-		<dependency>
-			<groupId>org.hsqldb</groupId>
-			<artifactId>hsqldb</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<!-- polyglot end -->
-```
-- pom.yml 파일 내 DB 정보 변경 및 재기동 후 전시회 예약 처리</br>
-  --> 처리 결과 화면 캡쳐 <--
 
 ## 운영
 ### Deploy/Pipeline 설정
