@@ -297,8 +297,22 @@ public interface ExhibitionRepository extends CrudRepository<Exhibition, Long> {
 
 ## 운영
 ### Deploy/Pipeline 설정
-- 각 구현체들은 각자의 source repository 에 구성되었고, 사용한 CI/CD 플랫폼은 aws codebuild를 사용하였으며, pipeline build script 는 각 프로젝트 폴더 이하에 buildspec.yml 에 포함되었다.
---> AWS 화면 캡처 <--
+- CodeBuild를 사용하지 않고, docker images를 AWS를 통해 수작업으로 배포/기동 하였음.  </br>
+	- Package & docker image build/push </br>
+		mvn package </br>
+		![image](https://user-images.githubusercontent.com/87048633/131690173-79fe4e46-6096-4995-886f-6e5dd5b1f15a.png) </br>
+		docker build -t 841243021246.dkr.ecr.us-east-2.amazonaws.com/exhibition:latest . </br>
+		![image](https://user-images.githubusercontent.com/87048633/131690203-674eff72-1b13-445c-bf9a-6b279d653ab8.png) </br>
+		docker push 841243021246.dkr.ecr.us-east-2.amazonaws.com/exhibition:latest </br>
+		![image](https://user-images.githubusercontent.com/87048633/131690237-51367a4d-865b-44a9-8761-0135887b5da7.png) </br>
+
+	- Docker이미지로 Deployment 생성 </br>
+		kubectl create deploy exhibition --image=841243021246.dkr.ecr.us-east-2.amazonaws.com/exhibition:lates </br>
+		expose </br>
+		kubectl expose deploy exhibition --type=ClusterIP --port=8080 </br>
+		![image](https://user-images.githubusercontent.com/87048633/131690620-52456453-7517-4691-9ab3-990c6602b7df.png) </br>
+	- AWS Console에서 ECR 확인 </br>
+		![image](https://user-images.githubusercontent.com/87048633/131690922-8001eed4-d29e-439c-96ed-5cd03d626bf5.png) </br>
 
 ### AutoScale Out
   --> 좀 더 공부해 볼 것 <--
