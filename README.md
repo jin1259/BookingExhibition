@@ -49,7 +49,7 @@
  ![image](https://user-images.githubusercontent.com/87048633/131067490-a61c5806-9c65-4de7-a97a-92522f2fe8d5.png)
  
 #### 2-1. 1차 완성본에 대한 기능적 요구사항에 대한 검증 
- ![image](https://user-images.githubusercontent.com/87048633/131067412-9206e2c5-5c40-4b73-9257-2edff25e2195.png)
+ ![image](https://user-images.githubusercontent.com/87048633/131067412-9206e2c5-5c40-4b73-9257-2edff25e2195.png) </br>
  (O) 1. 관람객은 방문하려는 날짜와 회차(시간) 선택, 연락처를 입력하고 예약한다. </br>
  (O) 2. 예약 등록시 관람료를 결제해야 한다. </br>
  (O) 3. 관람료가 결제되지 않으면 최종 관람 예약이 성립되지 않는다. </br>
@@ -59,7 +59,7 @@
  (O) 7. 관람객은 본인의 예약 내역을 조회할 수 있다. </br>
  
 #### 2-2. 1차 완성본에 대한 비기능적 요구사항에 대한 검증
- ![image](https://user-images.githubusercontent.com/87048633/131067367-ef31ab2a-28df-44d0-b2e2-e63ec44e5306.png)
+ ![image](https://user-images.githubusercontent.com/87048633/131067367-ef31ab2a-28df-44d0-b2e2-e63ec44e5306.png) </br>
  (O) 1. 트랜잭션 </br>
        - 관람료가 결제되어야 최종 관람 예약이 성립된다. -> Sync 호출 </br>
  (O) 2. 장애격리 </br>
@@ -91,9 +91,7 @@ mvn spring-boot:run
 cd gateway
 mvn spring-boot:run
 ```
-- gateway의 application.yml의 일부</br>
-![image](https://user-images.githubusercontent.com/87048633/130979608-fbc398b2-935d-4bba-a544-23a603f252d3.png)
-</br>
+
 
 - AWS 클라우드의 EKS 서비스 내에 서비스를 모두 빌드한다.
 --> kubectl get all 결과 캡처 <--
@@ -269,6 +267,9 @@ public interface ExhibitionRepository extends CrudRepository<Exhibition, Long> {
   ![image](https://user-images.githubusercontent.com/87048633/131062057-fadb35f5-4584-4077-8d29-ec0fa4c76152.png) </br>
   
 ### Gateway
+  - API gateway 를 통해 MSA 진입점을 통일 시킨다.
+  - Gateway의 application.yml의 일부</br>
+	![image](https://user-images.githubusercontent.com/87048633/130979608-fbc398b2-935d-4bba-a544-23a603f252d3.png) </br>
   - Gateway 서비스 확인 </br>
   	- 서비스 직접 조회</br>
       	![image](https://user-images.githubusercontent.com/87048633/131061668-68d5379f-ce86-4c05-83c3-9cc033315a08.png) </br>
