@@ -314,6 +314,14 @@ public interface ExhibitionRepository extends CrudRepository<Exhibition, Long> {
 	- AWS Console에서 ECR 확인 </br>
 		![image](https://user-images.githubusercontent.com/87048633/131690922-8001eed4-d29e-439c-96ed-5cd03d626bf5.png) </br>
 
+- 각 구현체들은 각자의 source repository 에 구성되었고, 사용한 CI/CD 플랫폼은 aws codebuild를 사용하였으며, pipeline build script 는 각 프로젝트 폴더 이하에 buildspec.yml 에 포함되었다. </br>
+![image](https://user-images.githubusercontent.com/87048633/131809375-f68d4acd-0af7-44c6-b97d-c7a2332f464f.png) </br>
+![image](https://user-images.githubusercontent.com/87048633/131809459-186f5e86-e3b4-48c1-8c74-fbb8093b2ec7.png) </br>
+![image](https://user-images.githubusercontent.com/87048633/131809705-75ecdec0-488e-4f71-bf99-e927c1e71916.png) </br>
+- Repository(ECR) 적용 확인</br>
+![image](https://user-images.githubusercontent.com/87048633/131810132-7289bf43-25bd-4b31-a428-279f8a9e8888.png) </br>
+
+
 ### AutoScale Out
   --> 좀 더 공부해 볼 것 <--
   - replica를 동적으로 늘려서 HPA를 설정한다.
@@ -330,6 +338,31 @@ public interface ExhibitionRepository extends CrudRepository<Exhibition, Long> {
 - ConfigMap을 사용하여 운영과 개발 환경 분리
 - kafka환경
 
-### Self-Healing
---> 좀 더 공부해볼 것 <--
+###  Self-healing (Liveness Probe)
+- Liveness Command probe를 통해 pod 상태를 체크하다가 pod 상태가 비정상인 경우 재시작한다. </br>
+- Booking서비스의 buildspec.yaml파일 수정 </br>
+	- . /tmp/test 파일이 존재하는지, 5초(periodSeconds 파라미터 값)마다 확인 </br>
+	- 파일이 존재하지 않을 경우, 정상 작동에 문제가 있다고 판단되어 자동으로 컨테이너가 재시작 </br>
+```
+args:           
+  - /bin/sh    
+  - -c          
+  - touch /tmp/test; sleep 30; rm -rf /tmp/test; sleep 600
+
+(중략)
+
+livenessProbe:   
+  exec: 
+    command: 
+    - cat    
+    - /tmp/test  
+  initialDelaySeconds: 5  
+  periodSeconds: 5  
+```
+- 해당 pod가 재시작하는 걸 확인한다. 
+![image](https://user-images.githubusercontent.com/87048633/131808872-24a85a5d-b2e0-4ae2-9ec2-ba74a503b8e5.png) </br>
+![image](https://user-images.githubusercontent.com/87048633/131808913-ddfc66bf-216f-4c0d-b672-e8e4d43a9b17.png) </br>
+![image](https://user-images.githubusercontent.com/87048633/131808990-520d859d-4114-47ea-a2ea-60c985bd84c3.png) </br>
+
+
 
