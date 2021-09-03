@@ -42,9 +42,6 @@
 
 ## 분석/설계
 ### Event Storming 결과
-    MSAEz 로 모델링한 이벤트스토밍 결과
-    http://labs.msaez.io/#/storming/fMnS97KBhKdTR73T20ep9sUs6kE2/9131f35ec41231894db13d063a05c048
-
 #### 1. 완성된 1차 모형
  ![image](https://user-images.githubusercontent.com/87048633/131067490-a61c5806-9c65-4de7-a97a-92522f2fe8d5.png)
  
@@ -294,7 +291,7 @@ public interface ExhibitionRepository extends CrudRepository<Exhibition, Long> {
 
 ## 운영
 ### Deploy/Pipeline 설정
-#### 수동 배포
+#### 1. 수동 배포
 - CodeBuild를 사용하지 않고, docker images를 AWS를 통해 수작업으로 배포/기동 하였음.  </br>
 	- Package & docker image build/push </br>
 		mvn package </br>
@@ -312,7 +309,7 @@ public interface ExhibitionRepository extends CrudRepository<Exhibition, Long> {
 	- AWS Console에서 ECR 확인 </br>
 		![image](https://user-images.githubusercontent.com/87048633/131690922-8001eed4-d29e-439c-96ed-5cd03d626bf5.png) </br>
 		
-#### CodeBuild를 이용한 자동 배보 및 Pipeline 설정
+#### 2. CodeBuild를 이용한 자동 배보 및 Pipeline 설정
 - 각 구현체들은 각자의 source repository 에 구성되었고, 사용한 CI/CD 플랫폼은 aws codebuild를 사용하였으며, pipeline build script 는 각 프로젝트 폴더 이하에 buildspec.yml 에 포함되었다. </br>
 ![image](https://user-images.githubusercontent.com/87048633/131809375-f68d4acd-0af7-44c6-b97d-c7a2332f464f.png) </br>
 ![image](https://user-images.githubusercontent.com/87048633/131809459-186f5e86-e3b4-48c1-8c74-fbb8093b2ec7.png) </br>
@@ -335,7 +332,7 @@ public interface ExhibitionRepository extends CrudRepository<Exhibition, Long> {
   - 증가된 pod 수 확인 </br>
 	![image](https://user-images.githubusercontent.com/87048633/131938374-7b2d6a7d-550f-4793-ac5f-4aebe4f8a452.png) </br>
 
-### 무정지 재배포 (Readiness Probe)
+### Readiness Probe (무정지 재배포)
 - readiness probe 를 통해 이후 서비스가 활성 상태가 되면 유입을 진행시킨다. </br>
 - 대상 서비스(Payment)에 AutoScale관련 옵션 주석 처리 후, Readiness Probe관련 설정 추가하여 buildspec.yml 수정하여 빌드 </br>
 	![image](https://user-images.githubusercontent.com/87048633/131941508-ddfd4d0a-3970-43d9-9bfe-25ca1dc386ec.png) </br>
@@ -346,9 +343,7 @@ public interface ExhibitionRepository extends CrudRepository<Exhibition, Long> {
 - 무정지 배포 중 부하 테스트 수행 결과확인 </br>
 	![image](https://user-images.githubusercontent.com/87048633/131941630-b932eca2-bf20-40f1-82bc-7eb2838f44e0.png) </br>	
 
-### 개발/운영 환경 분리 (ConfigMap)
---> 좀 더 공부해볼 것 <--
-- ConfigMap을 사용하여 운영과 개발 환경 분리
+### ConfigMap (개발/운영환경분리)
 - Payment서비스에 configmap 관련 변수 적용 (Payment.java) </br>
 ```
     @PostPersist
@@ -377,7 +372,7 @@ public interface ExhibitionRepository extends CrudRepository<Exhibition, Long> {
 - 서비스 재빌드 후 pod 상태 확인 </br>
 	- ![image](https://user-images.githubusercontent.com/87048633/131950521-7f69cf56-dacb-4826-9dd2-738a4252fcc0.png) </br>
 
-###  Self-healing (Liveness Probe)
+###  Liveness Probe (Self-healing)
 - Liveness Command probe를 통해 pod 상태를 체크하다가 pod 상태가 비정상인 경우 재시작한다. </br>
 - Booking서비스의 buildspec.yaml파일 수정 </br>
 	- . /tmp/test 파일이 존재하는지, 5초(periodSeconds 파라미터 값)마다 확인 </br>
