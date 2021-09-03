@@ -94,7 +94,6 @@ cd gateway
 mvn spring-boot:run
 ```
 
-
 - AWS 클라우드의 EKS 서비스 내에 서비스를 모두 빌드한다.
 --> kubectl get all 결과 캡처 <--
 
@@ -257,15 +256,15 @@ public interface ExhibitionRepository extends CrudRepository<Exhibition, Long> {
   ![image](https://user-images.githubusercontent.com/87048633/131502990-97723ee1-551c-4341-bb3c-c6042f892f12.png) </br>
    
 ### 동기식 호출
-분석단계에서의 조건 중 하나로 예약(Booking) -> 결제(Payment)간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 처리하기로 하였다.</br>
-호출 프로토콜은 이미 앞서 Rest Repository 에 의해 노출되어있는 REST 서비스를 FeignClient 를 이용하여 호출하도록 한다.</br>
+분석단계에서의 조건 중 하나로 예약(Booking) -> 결제(Payment)간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 처리하기로 하였다. </br>
+호출 프로토콜은 이미 앞서 Rest Repository 에 의해 노출되어있는 REST 서비스를 FeignClient 를 이용하여 호출하도록 한다. </br>
 
 - 비기능 요구사항 중 하나인 예약(Booking) -> 결제(Payment)간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 처리하기로 하였다. </br>
 - 호출 프로토콜은 앞서 Rest Repository에 의해 노출되어 있는 REST 서비스를 FeignClient 를 이용하여 호출하도록 한다. </br>
   ![image](https://user-images.githubusercontent.com/87048633/130982925-7e929b83-b1b3-4b94-94dd-339d72bc4a94.png) </br>
 - Payment서비스를 연동하기위한 Booking 서비스의 application.yml 파일</br>
   ![image](https://user-images.githubusercontent.com/87048633/130983236-711288ab-3d85-4667-bcaf-258ed8de9e78.png) </br>
-- 동기식 호출 후 Payment서비스 처리결과</br>
+- 동기식 호출 후 Payment서비스 처리결과 </br>
   ![image](https://user-images.githubusercontent.com/87048633/131062057-fadb35f5-4584-4077-8d29-ec0fa4c76152.png) </br>
   
 ### Gateway
@@ -273,16 +272,16 @@ public interface ExhibitionRepository extends CrudRepository<Exhibition, Long> {
   - Gateway의 application.yml의 일부</br>
 	![image](https://user-images.githubusercontent.com/87048633/130979608-fbc398b2-935d-4bba-a544-23a603f252d3.png) </br>
   - Gateway 서비스 확인 </br>
-  	- 서비스 직접 조회</br>
+  	- 서비스 직접 조회 </br>
       	![image](https://user-images.githubusercontent.com/87048633/131061668-68d5379f-ce86-4c05-83c3-9cc033315a08.png) </br>
-	- Gateway로 조회</br>
+	- Gateway로 조회 </br>
       	![image](https://user-images.githubusercontent.com/87048633/131061736-9b6697cc-a16f-49eb-964c-7328bbd95632.png) </br>
       
 ### 서킷 브레이킹
   - 서킷 브레이킹 프레임워크의 선택 : FeignClient + hystrix </br>
   - Booking 서비스의 application.yaml </br>
   	- Hystrix 설정 : 요청처리 쓰레드에서 처리 시간이 610 밀리세컨드가 넘어서기 시작하여 어느 정도 유지되면 Circuit Breaker 회로가 닫히도록 설정 </br>
-   		![image](https://user-images.githubusercontent.com/87048633/131499559-3890198b-4a8f-41fe-ad45-9228abd9d549.png)</br>
+   		![image](https://user-images.githubusercontent.com/87048633/131499559-3890198b-4a8f-41fe-ad45-9228abd9d549.png) </br>
   - 피호출 서비스 (결제:Payment.java)의 임의 후바 처리 400 밀리세컨드에서 증감 220 밀리세컨드 정도 왔다갔다 하게 처리 </br>
 	![image](https://user-images.githubusercontent.com/87048633/131500001-39284688-2568-46f4-a38a-07a58b34adfd.png) </br>
   - 서킷 브레이킹 처리 이전 </br>
@@ -293,7 +292,7 @@ public interface ExhibitionRepository extends CrudRepository<Exhibition, Long> {
 ### Polyglot Persistent/Programming
 - Polyglot Persistent 조건을 만족하기 위해 Exhibition 서비스의 기존 h2 DB를 hsqldb로 변경하여 동작시킨다. (pom.xml) </br>
   ![image](https://user-images.githubusercontent.com/87048633/131501731-9dbdccd3-ac9b-401f-a994-d0909b27caa7.png) </br>
-- 재기동 후 전시회 등록 처리</br>
+- 재기동 후 전시회 등록 처리 </br>
   ![image](https://user-images.githubusercontent.com/87048633/131501662-38a4b5ca-9cf2-4a52-ad8f-10883e696e2b.png) </br>
 
 
@@ -323,7 +322,6 @@ public interface ExhibitionRepository extends CrudRepository<Exhibition, Long> {
 - Repository(ECR) 적용 확인</br>
 ![image](https://user-images.githubusercontent.com/87048633/131810132-7289bf43-25bd-4b31-a428-279f8a9e8888.png) </br>
 
-
 ### AutoScale Out
   - 시스템을 안정되게 운영할 수 있게 해줬지만 사용자의 요청을 100% 받아들여주지 못했기 때문에 이에 대한 보완책으로 자동화된 확장 기능을 적용하고자 한다. </br>
   - Payment 서비스에 대한 replica 를 동적으로 늘려주도록 buildspec.yml에서 resource 설정 추가한다. </br>
@@ -340,7 +338,7 @@ public interface ExhibitionRepository extends CrudRepository<Exhibition, Long> {
 	![image](https://user-images.githubusercontent.com/87048633/131938374-7b2d6a7d-550f-4793-ac5f-4aebe4f8a452.png) </br>
 
 ### 무정지 재배포 (Readiness Probe)
-- readiness probe 를 통해 이후 서비스가 활성 상태가 되면 유입을 진행시킨다.
+- readiness probe 를 통해 이후 서비스가 활성 상태가 되면 유입을 진행시킨다. </br>
 - 대상 서비스(Payment)에 AutoScale관련 옵션 주석 처리 후, Readiness Probe관련 설정 추가하여 buildspec.yml 수정하여 빌드 </br>
 	![image](https://user-images.githubusercontent.com/87048633/131941508-ddfd4d0a-3970-43d9-9bfe-25ca1dc386ec.png) </br>
 - 부하 테스트 수행 : 10명이 400초 동안 서비스 동시 호출 </br>
@@ -348,8 +346,7 @@ public interface ExhibitionRepository extends CrudRepository<Exhibition, Long> {
 - 대상 서비스(Payment)에 Readiness Probe관련 설정을 주석처리하여 buildspec.yml 수정 후 빌드
 	![image](https://user-images.githubusercontent.com/87048633/131941591-7233105e-b8f1-4b98-a3ea-20f68bd4bd8d.png) </br>
 - 무정지 배포 중 부하 테스트 수행 결과확인 </br>
-	![image](https://user-images.githubusercontent.com/87048633/131941630-b932eca2-bf20-40f1-82bc-7eb2838f44e0.png) </br>
-	
+	![image](https://user-images.githubusercontent.com/87048633/131941630-b932eca2-bf20-40f1-82bc-7eb2838f44e0.png) </br>	
 
 ### 개발/운영 환경 분리 (ConfigMap)
 --> 좀 더 공부해볼 것 <--
@@ -377,7 +374,7 @@ livenessProbe:
   initialDelaySeconds: 5  
   periodSeconds: 5  
 ```
-- 해당 pod가 재시작하는 걸 확인한다. 
+- 해당 pod가 재시작하는 걸 확인한다. </br>
 ![image](https://user-images.githubusercontent.com/87048633/131808872-24a85a5d-b2e0-4ae2-9ec2-ba74a503b8e5.png) </br>
 ![image](https://user-images.githubusercontent.com/87048633/131808913-ddfc66bf-216f-4c0d-b672-e8e4d43a9b17.png) </br>
 ![image](https://user-images.githubusercontent.com/87048633/131808990-520d859d-4114-47ea-a2ea-60c985bd84c3.png) </br>
