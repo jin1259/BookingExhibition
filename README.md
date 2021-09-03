@@ -72,7 +72,9 @@
  ![image](https://user-images.githubusercontent.com/87048633/130977591-2c1b50a4-6e47-4608-8203-aa30e2ceb9c0.png)
 
 #### 4.Hexagonal Architecture Diagram 도출
- ![image](https://user-images.githubusercontent.com/87048633/130978000-4497cefa-f8c0-48b1-9a22-b0ba99a86734.png)
+ ![image](https://user-images.githubusercontent.com/87048633/130978000-4497cefa-f8c0-48b1-9a22-b0ba99a86734.png) </br>
+ </br>
+ ![image](https://user-images.githubusercontent.com/87048633/131934056-fc219cab-c071-4446-8f6b-460a451e3cc6.png) </br>
  
  
 ## 구현
@@ -284,9 +286,9 @@ public interface ExhibitionRepository extends CrudRepository<Exhibition, Long> {
   - 피호출 서비스 (결제:Payment.java)의 임의 후바 처리 400 밀리세컨드에서 증감 220 밀리세컨드 정도 왔다갔다 하게 처리 </br>
 	![image](https://user-images.githubusercontent.com/87048633/131500001-39284688-2568-46f4-a38a-07a58b34adfd.png) </br>
   - 서킷 브레이킹 처리 이전 </br>
-	![image](https://user-images.githubusercontent.com/87048633/131499263-7e3cd971-5e79-41b7-9df2-5ca6ef727103.png) </br>
+	![image](https://user-images.githubusercontent.com/87048633/131934092-7a54226f-7041-4cc8-8742-57d2c324cb70.png) </br>
   - 서킷 브레이킹 처리 이후 </br>
-	![image](https://user-images.githubusercontent.com/87048633/131499270-e5fa2aa2-7f0d-4c54-90ad-756746ad3972.png) </br>
+	![image](https://user-images.githubusercontent.com/87048633/131934103-9b6eb177-b8f2-4cbb-8c13-76958f0b9fc9.png) </br>
 
 ### Polyglot Persistent/Programming
 - Polyglot Persistent 조건을 만족하기 위해 Exhibition 서비스의 기존 h2 DB를 hsqldb로 변경하여 동작시킨다. (pom.xml) </br>
@@ -323,13 +325,21 @@ public interface ExhibitionRepository extends CrudRepository<Exhibition, Long> {
 
 
 ### AutoScale Out
-  --> 좀 더 공부해 볼 것 <--
-  - replica를 동적으로 늘려서 HPA를 설정한다.
-  - 시스템을 안정되게 운영할 수 있게 해줬지만 사용자의 요청을 100% 받아들여주지 못했기 때문에 이에 대한 보완책으로 자동화된 확장 기능을 적용하고자 한다.
-  - 예약 서비스에 대한 replica 를 동적으로 늘려주도록 HPA 를 설정한다.
-  - 예약 서비스의 buildspec.yml에 resource 설정을 추가한다.
+  - 시스템을 안정되게 운영할 수 있게 해줬지만 사용자의 요청을 100% 받아들여주지 못했기 때문에 이에 대한 보완책으로 자동화된 확장 기능을 적용하고자 한다. </br>
+  - Payment 서비스에 대한 replica 를 동적으로 늘려주도록 buildspec.yml에서 resource 설정 추가한다. </br>
+	![image](https://user-images.githubusercontent.com/87048633/131938078-a63fcaa3-69f4-41a6-b979-45fdd65559b6.png) </br>
+	
+  - AutoScale 적용  : 리소스 사용율이 50%가 넘으면 pod를 10개까지 늘린다. </br>
+	```
+	kubectl autoscale deployment user15-payment --cpu-percent=50 --min=1 --max=10
+	```
+	![image](https://user-images.githubusercontent.com/87048633/131938303-b36da247-3e29-4858-b617-5f69fdf4afa5.png)</br>
+  - 부하 테스트 : 동시 사용자 110명, 10초 동안 수행</br>
+	![image](https://user-images.githubusercontent.com/87048633/131938352-6f29a52c-273d-455f-957a-d22bde9dbc64.png) </br>
+  - 증가된 pod 수 확인 </br>
+	![image](https://user-images.githubusercontent.com/87048633/131938374-7b2d6a7d-550f-4793-ac5f-4aebe4f8a452.png) </br>
 
-### 무정지 재배포
+### 무정지 재배포 (Readiness Probe)
 - readiness probe 를 통해 이후 서비스가 활성 상태가 되면 유입을 진행시킨다.
 --> 좀 더 공부해볼 것 <--
 
