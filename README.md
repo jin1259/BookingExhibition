@@ -343,6 +343,7 @@ public interface ExhibitionRepository extends CrudRepository<Exhibition, Long> {
 	![image](https://user-images.githubusercontent.com/87048633/131941591-7233105e-b8f1-4b98-a3ea-20f68bd4bd8d.png) </br>
 - 무정지 배포 중 부하 테스트 수행 결과확인 </br>
 	![image](https://user-images.githubusercontent.com/87048633/131941630-b932eca2-bf20-40f1-82bc-7eb2838f44e0.png) </br>	
+--> readiness probe 설정 후 한 번 더 빌드해서 무정지 배포 정상 처리 확인 필요 (fr. 강사) </br>
 
 ### ConfigMap (개발/운영환경분리)
 - Payment서비스에 configmap 관련 변수 적용 (Payment.java) </br>
