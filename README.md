@@ -19,7 +19,7 @@
     - [AutoScale Out](#AutoScale-Out)
     - [무정지 재배포](#무정지-재배포)
     - [개발/운영 환경 분리 (ConfigMap)](#개발/운영-환경-분리-(ConfigMap))
-    - [Self-Healing](#Self-Healing)
+    - [Liveness-Probe-(Self-healing)](#Liveness-Probe-(Self-healing))
 
 ## 서비스 시나리오
     기능적 요구사항
