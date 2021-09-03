@@ -372,7 +372,7 @@ public interface ExhibitionRepository extends CrudRepository<Exhibition, Long> {
 - configmap 생성 확인 </br>
 	![image](https://user-images.githubusercontent.com/87048633/131950467-ceef34c5-53b4-42ca-bf23-dd45a9f33270.png) </br>
 - 서비스 재빌드 후 pod 상태 확인 </br>
-	- ![image](https://user-images.githubusercontent.com/87048633/131950521-7f69cf56-dacb-4826-9dd2-738a4252fcc0.png) </br>
+	![image](https://user-images.githubusercontent.com/87048633/131950521-7f69cf56-dacb-4826-9dd2-738a4252fcc0.png) </br>
 
 ###  Liveness Probe (Self-healing)
 - Liveness Command probe를 통해 pod 상태를 체크하다가 pod 상태가 비정상인 경우 재시작한다. </br>
