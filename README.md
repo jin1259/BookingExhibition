@@ -341,7 +341,15 @@ public interface ExhibitionRepository extends CrudRepository<Exhibition, Long> {
 
 ### 무정지 재배포 (Readiness Probe)
 - readiness probe 를 통해 이후 서비스가 활성 상태가 되면 유입을 진행시킨다.
---> 좀 더 공부해볼 것 <--
+- 대상 서비스(Payment)에 AutoScale관련 옵션 주석 처리 후, Readiness Probe관련 설정 추가하여 buildspec.yml 수정하여 빌드 </br>
+	![image](https://user-images.githubusercontent.com/87048633/131941508-ddfd4d0a-3970-43d9-9bfe-25ca1dc386ec.png) </br>
+- 부하 테스트 수행 : 10명이 400초 동안 서비스 동시 호출 </br>
+	![image](https://user-images.githubusercontent.com/87048633/131941549-9a00b6e4-967f-4fa4-94f7-a5a0a5177a91.png) </br>
+- 대상 서비스(Payment)에 Readiness Probe관련 설정을 주석처리하여 buildspec.yml 수정 후 빌드
+	![image](https://user-images.githubusercontent.com/87048633/131941591-7233105e-b8f1-4b98-a3ea-20f68bd4bd8d.png) </br>
+- 무정지 배포 중 부하 테스트 수행 결과확인 </br>
+	![image](https://user-images.githubusercontent.com/87048633/131941630-b932eca2-bf20-40f1-82bc-7eb2838f44e0.png) </br>
+	
 
 ### 개발/운영 환경 분리 (ConfigMap)
 --> 좀 더 공부해볼 것 <--
