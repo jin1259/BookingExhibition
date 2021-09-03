@@ -94,9 +94,6 @@ cd gateway
 mvn spring-boot:run
 ```
 
-- AWS 클라우드의 EKS 서비스 내에 서비스를 모두 빌드한다.
---> kubectl get all 결과 캡처 <--
-
 ### DDD의 적용
 - 각 서비스내에 도출된 핵심 Aggregate Root 객체를 Entity 로 선언하였다. 이때 가능한 현업에서 사용하는 언어 (유비쿼터스 랭귀지)를 그대로 사용하려고 노력했다.
 - 예시 : Exhibition 서비스 (Exhibition.java)
@@ -237,8 +234,7 @@ public interface ExhibitionRepository extends CrudRepository<Exhibition, Long> {
 - 예약 정보 확인하기(CQRS) </br>
 	http GET http://localhost:8081/myPages </br>
 	![image](https://user-images.githubusercontent.com/87048633/131499138-3ee98005-7061-45df-9a63-73465ebcd40b.png) </br>
-
-
+	
 ### 비동기식 호출과 Eventual Consistency 
 - Booked -> CompletedPayment -> IncreasedAudience 순서로 Event가 처리됨 </br>
 	![image](https://user-images.githubusercontent.com/87048633/131503756-78f2072f-4409-45f6-a469-ab96b2dc5366.png) </br>
@@ -298,6 +294,7 @@ public interface ExhibitionRepository extends CrudRepository<Exhibition, Long> {
 
 ## 운영
 ### Deploy/Pipeline 설정
+#### 수동 배포
 - CodeBuild를 사용하지 않고, docker images를 AWS를 통해 수작업으로 배포/기동 하였음.  </br>
 	- Package & docker image build/push </br>
 		mvn package </br>
@@ -314,7 +311,8 @@ public interface ExhibitionRepository extends CrudRepository<Exhibition, Long> {
 		![image](https://user-images.githubusercontent.com/87048633/131690620-52456453-7517-4691-9ab3-990c6602b7df.png) </br>
 	- AWS Console에서 ECR 확인 </br>
 		![image](https://user-images.githubusercontent.com/87048633/131690922-8001eed4-d29e-439c-96ed-5cd03d626bf5.png) </br>
-
+		
+#### CodeBuild를 이용한 자동 배보 및 Pipeline 설정
 - 각 구현체들은 각자의 source repository 에 구성되었고, 사용한 CI/CD 플랫폼은 aws codebuild를 사용하였으며, pipeline build script 는 각 프로젝트 폴더 이하에 buildspec.yml 에 포함되었다. </br>
 ![image](https://user-images.githubusercontent.com/87048633/131809375-f68d4acd-0af7-44c6-b97d-c7a2332f464f.png) </br>
 ![image](https://user-images.githubusercontent.com/87048633/131809459-186f5e86-e3b4-48c1-8c74-fbb8093b2ec7.png) </br>
@@ -351,7 +349,33 @@ public interface ExhibitionRepository extends CrudRepository<Exhibition, Long> {
 ### 개발/운영 환경 분리 (ConfigMap)
 --> 좀 더 공부해볼 것 <--
 - ConfigMap을 사용하여 운영과 개발 환경 분리
-- kafka환경
+- Payment서비스에 configmap 관련 변수 적용 (Payment.java) </br>
+```
+    @PostPersist
+    public void onPostPersist(){
+	
+	//configmap
+        System.out.println("########## Configmap KAFKA_URL => " + System.getenv("KAFKA_URL"));
+        this.setStatus(System.getenv("KAFKA_URL"));
+
+        System.out.println("########## Configmap LOG_FILE => " + System.getenv("LOG_FILE"));
+        this.setStatus(System.getenv("LOG_FILE"));
+        //configmap
+        
+        PaymentApproved paymentApproved = new PaymentApproved();
+        BeanUtils.copyProperties(this, paymentApproved);
+        paymentApproved.publishAfterCommit();     
+
+    }
+   ```
+- configmpa 생성 없이 서비스 빌드 후 pod 상태 확인 </br>
+	![image](https://user-images.githubusercontent.com/87048633/131950421-e635ef3c-a2be-46b9-ad6b-d67dab57fd16.png) </br>
+- 파일을 통해 configmpa 생성 </br>
+	![image](https://user-images.githubusercontent.com/87048633/131950443-165e27e9-8b1f-4852-9aa3-aa429803e5ee.png) </br>
+- configmap 생성 확인 </br>
+	![image](https://user-images.githubusercontent.com/87048633/131950467-ceef34c5-53b4-42ca-bf23-dd45a9f33270.png) </br>
+- 서비스 재빌드 후 pod 상태 확인 </br>
+	- ![image](https://user-images.githubusercontent.com/87048633/131950521-7f69cf56-dacb-4826-9dd2-738a4252fcc0.png) </br>
 
 ###  Self-healing (Liveness Probe)
 - Liveness Command probe를 통해 pod 상태를 체크하다가 pod 상태가 비정상인 경우 재시작한다. </br>
